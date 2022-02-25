@@ -1,5 +1,7 @@
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { AppRoute, AuthorizationStatus } from "../../const";
+import { Offer } from "../../types/offer";
+import { Review } from "../../types/review";
 
 import Main from "../../pages/main/Main";
 import Login from "../../pages/login/Login";
@@ -11,28 +13,52 @@ import Room from "../../pages/room/Room";
 
 type AppProps = {
   placesToStayQuantity: number;
+  offers: Offer[];
+  reviews: Review[];
 };
 
-function App(props: AppProps): JSX.Element {
+function App({ placesToStayQuantity, offers, reviews }: AppProps): JSX.Element {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route
             index
-            element={<Main placesToStayQuantity={props.placesToStayQuantity} />}
+            element={<Main offers={offers} placesToStayQuantity={placesToStayQuantity} />}
           />
 
           <Route
             path={AppRoute.Favorites}
             element={
-              <PrivateRoute authorizationStatus={AuthorizationStatus.NoAuth}>
-                <Favorites />
+              <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+                <Favorites offers={offers}/>
               </PrivateRoute>
             }
           />
 
-          <Route path={AppRoute.Offer} element={<Room />} />
+          <Route
+            path={AppRoute.Offers}
+            element={
+              <Room
+                authorizationStatus={AuthorizationStatus.Auth}
+                offers={offers}
+                reviews={reviews}
+              />
+            }
+          >
+            <Route
+            path={AppRoute.OfferId}
+            element={
+              <Room
+                authorizationStatus={AuthorizationStatus.Auth}
+                offers={offers}
+                reviews={reviews}
+              />
+            }
+          />  
+          </Route>
+
+
         </Route>
 
         <Route path={AppRoute.NotFound} element={<NotFound />} />
