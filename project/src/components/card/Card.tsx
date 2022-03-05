@@ -1,17 +1,27 @@
+import cn from 'classnames';
 import { Link } from 'react-router-dom';
-import {Offer} from '../../types/offer'
+import { Offer } from '../../types/offer'
 
 type OfferProps = {
   offer: Offer;
-  onMouseOver: () => void;
-  onMouseLeave: () => void;
+  onCardPlaceHover: (id: number) => void;
+  typeView: string;
 }
 
-function Card({offer, onMouseOver, onMouseLeave}: OfferProps): JSX.Element {
-  const {isPremium, previewImage, price, rating, type, description, isFavorite, id} = offer;
+function Card({ offer, onCardPlaceHover, typeView }: OfferProps): JSX.Element {
+  const { isPremium, previewImage, price, rating, type, description, isFavorite, id } = offer;
+
+  const handlePlaceCardMouseEnter = (id: number) => {
+    onCardPlaceHover(id);
+  };
+
 
   return (
-    <article onMouseOver={onMouseOver} onMouseLeave={onMouseLeave} id={ '' + id} className="cities__place-card place-card">
+    <article
+      onMouseEnter={() => { handlePlaceCardMouseEnter(id) }} onMouseLeave={() => handlePlaceCardMouseEnter(0)}
+      id={'' + id}
+      className={cn({ 'near-places__card place-card': typeView === 'nearCard', 'cities__place-card place-card': typeView === 'cityCard' })} //"cities__place-card place-card"
+    >
       {isPremium && <div className="place-card__mark">
         <span>Premium</span>
       </div>}
@@ -19,7 +29,7 @@ function Card({offer, onMouseOver, onMouseLeave}: OfferProps): JSX.Element {
         <a href="/#">
           <img
             className="place-card__image"
-            src={previewImage}
+            src={'/' + previewImage}
             alt="Place"
             width="260"
             height="200"

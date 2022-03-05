@@ -1,25 +1,30 @@
+import cn from 'classnames';
 import Card from "../card/Card"
-import {Offer} from '../../types/offer'
-import {useState} from 'react'
+import { Offer } from '../../types/offer'
 
 type OfferCardListProps = {
-    offers: Offer[];
+    offersByCity: Offer[];
+    onListItemHover: (id: number) => void;
+    typeView: string;
 }
 
-function OfferCardList({offers}: OfferCardListProps): JSX.Element {
-    
-    const [, setActiveOffer] = useState<null | number>(null);
+function OfferCardList({ offersByCity: offers, onListItemHover, typeView }: OfferCardListProps): JSX.Element {
+    const onCardPlaceHover = (id: number) => {
+        onListItemHover(id);
+    };
 
-return (
-    <div className="cities__places-list places__list tabs__content">
-        {
-            offers.map(offer => <Card onMouseLeave={() => setActiveOffer(null)} 
-                                    onMouseOver={() => setActiveOffer(offer.id)}
-                                    key={offer.id}
-                                    offer={offer}/>)
-        }
-    </div>
-)
+    return (
+        <div className={cn({ 'near-places__list places__list': typeView === 'nearCard', 'cities__places-list places__list tabs__content': typeView === 'cityCard' })}>
+            {
+                offers.map(offer => <Card
+                    onCardPlaceHover={onCardPlaceHover}
+                    key={offer.id}
+                    offer={offer}
+                    typeView={typeView}
+                />)
+            }
+        </div>
+    )
 }
 
 export default OfferCardList

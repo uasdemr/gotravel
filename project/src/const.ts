@@ -1,3 +1,5 @@
+
+
 export const RATING_COEFFICIENT = 20;
 export const MAX_REVIEW_STARS_COUNT = 5;
 
@@ -25,4 +27,7 @@ export const SortOfferVariants = [
  'Popular', 'Price: low to high', 'Price: high to low', 'Top rated first',
 ]
 
-export const cityNames = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
+export const CITY_NAMES = ['Paris', 'Cologne', 'Brussels', 'Amsterdam', 'Hamburg', 'Dusseldorf'];
+
+export const URL_MARKER_DEFAULT = '../img/pin.svg';
+export const URL_MARKER_CURRENT = '../img/pin-active.svg';

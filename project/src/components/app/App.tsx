@@ -1,7 +1,7 @@
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { AppRoute, AuthorizationStatus } from "../../const";
 import { Offer } from "../../types/offer";
-import { Review } from "../../types/review";
+import { ReviewType } from "../../types/review";
 
 import Main from "../../pages/main/Main";
 import Login from "../../pages/login/Login";
@@ -10,28 +10,31 @@ import NotFound from "../404/404";
 import PrivateRoute from "../private-router/private-router";
 import Layout from "../../pages/layout/Layout";
 import Room from "../../pages/room/Room";
+import { useSelector } from "react-redux";
+import {useAppDispatch, useAppSelector} from '../../hooks/index';
 
 type AppProps = {
   placesToStayQuantity: number;
-  offers: Offer[];
-  reviews: Review[];
+  // offers: Offer[];
+  // reviews: ReviewType[];
 };
 
-function App({ placesToStayQuantity, offers, reviews }: AppProps): JSX.Element {
+function App({ placesToStayQuantity }: AppProps): JSX.Element {
+  const {offers, reviews} = useAppSelector(state => state)
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route
             index
-            element={<Main offers={offers} placesToStayQuantity={placesToStayQuantity} />}
+            element={<Main />}
           />
 
           <Route
             path={AppRoute.Favorites}
             element={
               <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
-                <Favorites offers={offers}/>
+                <Favorites offers={offers.offers}/>
               </PrivateRoute>
             }
           />
@@ -41,8 +44,8 @@ function App({ placesToStayQuantity, offers, reviews }: AppProps): JSX.Element {
             element={
               <Room
                 authorizationStatus={AuthorizationStatus.Auth}
-                offers={offers}
-                reviews={reviews}
+                offers={offers.offers}
+                reviews={reviews.reviews}
               />
             }
           >
@@ -51,8 +54,8 @@ function App({ placesToStayQuantity, offers, reviews }: AppProps): JSX.Element {
             element={
               <Room
                 authorizationStatus={AuthorizationStatus.Auth}
-                offers={offers}
-                reviews={reviews}
+                offers={offers.offers}
+                reviews={reviews.reviews}
               />
             }
           />  

@@ -34,3 +34,8 @@ export type Offer = {
   title: string;
   type: string;
 };
+
+export type City = {
+  location: Location,
+  name: string,
+};
