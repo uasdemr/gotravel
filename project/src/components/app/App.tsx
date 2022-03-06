@@ -1,7 +1,5 @@
 import { Route, BrowserRouter, Routes } from "react-router-dom";
 import { AppRoute, AuthorizationStatus } from "../../const";
-import { Offer } from "../../types/offer";
-import { ReviewType } from "../../types/review";
 
 import Main from "../../pages/main/Main";
 import Login from "../../pages/login/Login";
@@ -10,13 +8,10 @@ import NotFound from "../404/404";
 import PrivateRoute from "../private-router/private-router";
 import Layout from "../../pages/layout/Layout";
 import Room from "../../pages/room/Room";
-import { useSelector } from "react-redux";
-import {useAppDispatch, useAppSelector} from '../../hooks/index';
+import { useAppSelector } from "../../hooks";
 
 type AppProps = {
   placesToStayQuantity: number;
-  // offers: Offer[];
-  // reviews: ReviewType[];
 };
 
 function App({ placesToStayQuantity }: AppProps): JSX.Element {

@@ -1,3 +1,5 @@
+import {useAppDispatch, useAppSelector} from '../../hooks/index';
+import {cityFilter} from '../../store/actions'
 import { Link } from "react-router-dom"
 import { CITY_NAMES } from '../../const'
 
@@ -7,6 +9,7 @@ type TabsPropsType = {
 }
 
 const tabsCreator = ({cityName, onTabClick}: TabsPropsType): JSX.Element[] => {
+    
     return CITY_NAMES.map((city) => {
         return (
             <li key={city} className="locations__item">
@@ -24,7 +27,15 @@ const tabsCreator = ({cityName, onTabClick}: TabsPropsType): JSX.Element[] => {
     })
 }
 
-function Tabs({ cityName, onTabClick }: TabsPropsType): JSX.Element {
+
+function Tabs(): JSX.Element {
+    const dispatch = useAppDispatch();
+    
+    const onTabClick = (cityName: string) => {
+        dispatch(cityFilter(cityName))
+      }
+    const cityName = useAppSelector((state) => state.offers.city);
+    
     return (
         <div className="tabs">
             <section className="locations container">

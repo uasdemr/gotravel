@@ -1,19 +1,21 @@
+import {useAppDispatch, useAppSelector} from '../../hooks/index';
+import {SyntheticEvent} from 'react'
+
 import { useState } from 'react';
 import {SortOfferVariants} from '../../const'
+import {citySortBy} from '../../store/actions'
 
-type SortType = {
-  sorting: string;
-  setSort: Function;
-}
 
-function Sort({sorting, setSort}: SortType): JSX.Element {
+function Sort(): JSX.Element {
+  const dispatch = useAppDispatch()
+
+  const sorting = useAppSelector(state => state.offers.sorting)
 
   const [isSortOpen, setIsSortOpen] = useState(false)
 
-  const onSortCLickHandler = (sort: string) => {
-    setSort(sort)
+  const onSortCLickHandler = (e: SyntheticEvent<HTMLElement>) => {
     setIsSortOpen(!isSortOpen)
-    
+    dispatch(citySortBy(e.currentTarget.innerText))
   }
 
   const onSortByClickHandler = () => {
@@ -27,7 +29,7 @@ function Sort({sorting, setSort}: SortType): JSX.Element {
         key={sort}
         className={`places__option ${isActive}`}
         tabIndex={0}
-        onClick={() => {onSortCLickHandler(sort)}}
+        onClick={(e) => {onSortCLickHandler(e)}}
       >
         {sort}
       </li>

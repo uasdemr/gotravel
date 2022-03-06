@@ -1,14 +1,32 @@
+import {useAppSelector} from '../../hooks/index';
+import { getOffersByCity, sortBySorting } from '../../utils';
+
 import cn from 'classnames';
 import Card from "../card/Card"
 import { Offer } from '../../types/offer'
+import { useEffect, useState } from 'react';
 
 type OfferCardListProps = {
-    offersByCity: Offer[];
     onListItemHover: (id: number) => void;
     typeView: string;
 }
 
-function OfferCardList({ offersByCity: offers, onListItemHover, typeView }: OfferCardListProps): JSX.Element {
+function OfferCardList({ onListItemHover, typeView }: OfferCardListProps): JSX.Element {
+    const city = useAppSelector((state) => state.offers.city);
+    const offers = useAppSelector((state) => state.offers.offers);
+    const sorting = useAppSelector((state) => state.offers.sorting);
+    
+    const offersByCity = getOffersByCity(city, offers);
+    
+    const [cardListState, setCardListState] = useState<Offer[]>(offersByCity)
+
+    useEffect(() => {
+        const sorted = sortBySorting(offersByCity, sorting)
+        setCardListState(sorted)
+        console.log(sorted);
+        
+    }, [sorting, city])
+
     const onCardPlaceHover = (id: number) => {
         onListItemHover(id);
     };
@@ -16,7 +34,7 @@ function OfferCardList({ offersByCity: offers, onListItemHover, typeView }: Offe
     return (
         <div className={cn({ 'near-places__list places__list': typeView === 'nearCard', 'cities__places-list places__list tabs__content': typeView === 'cityCard' })}>
             {
-                offers.map(offer => <Card
+                cardListState.map(offer => <Card
                     onCardPlaceHover={onCardPlaceHover}
                     key={offer.id}
                     offer={offer}

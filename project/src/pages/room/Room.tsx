@@ -142,7 +142,7 @@ function Room({
           <h2 className="near-places__title">
             Other places in the neighbourhood
           </h2>
-          <OfferCardList offersByCity={offers} typeView='nearCard' onListItemHover={() => {console.log('Hi from Near places!!!');
+          <OfferCardList typeView='nearCard' onListItemHover={() => {console.log('Hi from Near places!!!');
           }}/>
         </section>
       </div>
