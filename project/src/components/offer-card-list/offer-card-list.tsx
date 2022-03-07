@@ -16,26 +16,20 @@ function OfferCardList({ onListItemHover, typeView }: OfferCardListProps): JSX.E
     const offers = useAppSelector((state) => state.offers.offers);
     const sorting = useAppSelector((state) => state.offers.sorting);
     
-    const offersByCity = getOffersByCity(city, offers);
+    let offersByCity = getOffersByCity(city, offers);
     
     const [cardListState, setCardListState] = useState<Offer[]>(offersByCity)
 
     useEffect(() => {
         const sorted = sortBySorting(offersByCity, sorting)
         setCardListState(sorted)
-        console.log(sorted);
-        
     }, [sorting, city])
-
-    const onCardPlaceHover = (id: number) => {
-        onListItemHover(id);
-    };
 
     return (
         <div className={cn({ 'near-places__list places__list': typeView === 'nearCard', 'cities__places-list places__list tabs__content': typeView === 'cityCard' })}>
             {
                 cardListState.map(offer => <Card
-                    onCardPlaceHover={onCardPlaceHover}
+                    onListItemHover={onListItemHover}
                     key={offer.id}
                     offer={offer}
                     typeView={typeView}

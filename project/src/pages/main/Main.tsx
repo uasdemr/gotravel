@@ -1,4 +1,3 @@
-
 import Cities from '../../components/cities/cities';
 import Tabs from '../../components/tabs/Tabs';
 

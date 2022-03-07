@@ -20,7 +20,11 @@ function Cities(): JSX.Element {
   const offersByCity = getOffersByCity(city, offers);
 
   const onListItemHover = (offerId: number) => {
-    if (!offerId) return
+    if (offerId === 0) {
+      setSelectedOffer(offerId);  
+    }
+    if(!offerId) return
+
     const currentOffer = getOffer(offers, offerId) as Offer;
     const currentPoint: Point = {
       id: offerId,
@@ -28,7 +32,6 @@ function Cities(): JSX.Element {
       longitude: currentOffer.location.longitude,
       zoom: currentOffer.location.zoom,
     };
-
     setSelectedOffer(currentPoint.id);
   };
 

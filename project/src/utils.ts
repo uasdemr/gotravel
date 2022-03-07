@@ -16,8 +16,6 @@ export const getOffer = (offers: Offer[], id: string | number | undefined) => of
 );
 
 export const getOffersByCity = (city: string, offers: Offer[]) => {
-  console.log(offers.filter((item) => item.city.name === city));
-  
   return offers.filter((item) => item.city.name === city)
 };
 

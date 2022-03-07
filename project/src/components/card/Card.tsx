@@ -4,15 +4,15 @@ import { Offer } from '../../types/offer'
 
 type OfferProps = {
   offer: Offer;
-  onCardPlaceHover: (id: number) => void;
+  onListItemHover: (id: number) => void;
   typeView: string;
 }
 
-function Card({ offer, onCardPlaceHover, typeView }: OfferProps): JSX.Element {
+function Card({ offer, onListItemHover, typeView }: OfferProps): JSX.Element {
   const { isPremium, previewImage, price, rating, type, description, isFavorite, id } = offer;
 
   const handlePlaceCardMouseEnter = (id: number) => {
-    onCardPlaceHover(id);
+    onListItemHover(id);
   };
 
 

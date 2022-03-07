@@ -134,7 +134,7 @@ function Room({
           </div>
         </div>
         <section className="property__map map">
-          <Map className="property__map map" offers={offers} height={579}/>
+          <Map className="property__map map" offers={offers} height={579} typeView='room'/>
         </section>
       </section>
       <div className="container">

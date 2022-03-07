@@ -16,4 +16,5 @@ export type Point = Location & {
     height: number;
     activeOffer?: number;
     className: string;
+    typeView?: string;
   };
