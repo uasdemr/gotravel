@@ -1,23 +1,24 @@
-import { Offer } from "../../types/offer";
-import { ReviewType } from "../../types/review";
-import { AuthorizationStatus } from "../../const";
+import { AuthorizationStatus, ROOMS_IMAGES_COUNT } from "../../const";
 import ReviewList from "../../components/review-list/review-list";
 import ReviewForm from "../../components/review-form/review-form";
 import Map from '../../components/map/Map';
 import OfferCardList from '../../components/offer-card-list/offer-card-list'
+import { fetchCommentsByIdAction, fetchHotelsByIdAction, fetchNearbyHotelsByIdAction } from '../../store/api-actions'
+import { useAppDispatch, useAppSelector } from "../../hooks";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
-type RoomProps = {
-  offers: Offer[];
-  reviews: ReviewType[];
-  authorizationStatus: AuthorizationStatus;
-};
+function Room(): JSX.Element {
 
-function Room({
-  offers,
-  reviews,
-  authorizationStatus,
-}: RoomProps): JSX.Element {
-  const [firstOffer] = offers;
+  const { id: propertyId } = useParams();
+  const dispatch = useAppDispatch()
+
+  const offerById = useAppSelector(state => state.offers.offerById)
+  const authorizationStatus = useAppSelector(state => state.offers.authorizationStatus)
+  const reviews = useAppSelector(state => state.offers.commentsByHotelId)
+  const nearbyHotels = useAppSelector(state => state.offers.nearbyHotelsById)
+  const readyOffers = [...nearbyHotels, offerById]
+
   const {
     title,
     images,
@@ -31,25 +32,37 @@ function Room({
     price,
     goods,
     host,
-  } = firstOffer;
+  } = offerById;
 
-  const imageElements = images.map((image, index) => {
-    return (
-      <div key={index} className="property__image-wrapper">
-        <img className="property__image" src={"/" + image} alt="Studio" />
-      </div>
-    );
-  });
+
+  const makeImages = (quantity: number) => {
+    const imagesSlice = images.slice(0, quantity)
+    const imageElements = imagesSlice.map((image, index) => {
+      return (
+        <div key={index} className="property__image-wrapper">
+          <img className="property__image" src={image} alt="Studio" />
+        </div>
+      );
+    });
+    return imageElements
+  }
 
   const goodElements = goods.map((good, index) => {
     return <li key={index} className="property__inside-item">{good}</li>;
   });
 
+  useEffect(() => {
+    dispatch(fetchHotelsByIdAction(propertyId))
+    dispatch(fetchCommentsByIdAction(propertyId))
+    dispatch(fetchNearbyHotelsByIdAction(propertyId))
+
+  }, [propertyId])
+
   return (
     <main className="page__main page__main--property">
       <section className="property">
         <div className="property__gallery-container container">
-          <div className="property__gallery">{imageElements}</div>
+          <div className="property__gallery">{makeImages(ROOMS_IMAGES_COUNT)}</div>
         </div>
         <div className="property__container container">
           <div className="property__wrapper">
@@ -60,12 +73,15 @@ function Room({
             )}
             <div className="property__name-wrapper">
               <h1 className="property__name">{title}</h1>
+              {/* <button
+                className={`${isFavorite
+                  ? "place-card__bookmark-button--active"
+                  : "place-card__bookmark-button"
+                  } button`}
+                type="button"
+              > */}
               <button
-                className={`${
-                  isFavorite
-                    ? "place-card__bookmark-button--active"
-                    : "place-card__bookmark-button"
-                } button`}
+                className={isFavorite ? "property__bookmark-button property__bookmark-button--active button" : "property__bookmark-button button"}
                 type="button"
               >
                 <svg className="property__bookmark-icon" width="31" height="33">
@@ -106,9 +122,8 @@ function Room({
               <h2 className="property__host-title">Meet the host</h2>
               <div className="property__host-user user">
                 <div
-                  className={`${
-                    host.isPro && "property__avatar-wrapper--pro"
-                  } property__avatar-wrapper user__avatar-wrapper`}
+                  className={`${host.isPro && "property__avatar-wrapper--pro"
+                    } property__avatar-wrapper user__avatar-wrapper`}
                 >
                   <img
                     className="property__avatar user__avatar"
@@ -134,7 +149,7 @@ function Room({
           </div>
         </div>
         <section className="property__map map">
-          <Map className="property__map map" offers={offers} height={579} typeView='room'/>
+          <Map className="property__map map" activeOffer={offerById.id} offers={readyOffers} height={579} typeView='room' />
         </section>
       </section>
       <div className="container">
@@ -142,8 +157,9 @@ function Room({
           <h2 className="near-places__title">
             Other places in the neighbourhood
           </h2>
-          <OfferCardList typeView='nearCard' onListItemHover={() => {console.log('Hi from Near places!!!');
-          }}/>
+          <OfferCardList offers={nearbyHotels} typeView='nearCard' onListItemHover={() => {
+            console.log('Hi from Near places!!!');
+          }} />
         </section>
       </div>
     </main>

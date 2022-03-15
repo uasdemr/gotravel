@@ -1,3 +1,5 @@
+import { useAppDispatch } from '../../hooks';
+import { fetchFavoritesAction, setFavoriteAction } from '../../store/api-actions';
 import {Offer} from '../../types/offer'
 
 type FavoriteTypeProps = {
@@ -7,12 +9,20 @@ type FavoriteTypeProps = {
 
 function FavoriteCard({card, cityName}: FavoriteTypeProps):JSX.Element {
   const {isPremium, previewImage, price, rating, type, description, isFavorite, id} = card;
+
+  const dispatch = useAppDispatch()
+
+  const onFavoriteClickHandler = async () => {
+    await dispatch(setFavoriteAction(card))
+    dispatch(fetchFavoritesAction())
+  }
+
     return (
         <article key={id} className="favorites__card place-card">
           {isPremium && <div className="place-card__mark">
             <span>Premium</span>
           </div>}
-          
+
           <div className="favorites__image-wrapper place-card__image-wrapper">
             <a href="/#">
               <img
@@ -33,6 +43,7 @@ function FavoriteCard({card, cityName}: FavoriteTypeProps):JSX.Element {
                 </span>
               </div>
               <button
+              onClick={onFavoriteClickHandler}
                 className={`place-card__bookmark-button ${isFavorite ? 'place-card__bookmark-button--active' : ''} button`}
                 type="button"
               >

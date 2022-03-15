@@ -1,5 +1,9 @@
-import React, { Fragment, useState } from "react";
-import { MAX_REVIEW_STARS_COUNT, ValidReviewTextLength } from "../../const";
+import React, {SyntheticEvent, useState } from "react";
+import { useParams } from "react-router-dom";
+import { ValidReviewTextLength } from "../../const";
+import { useAppDispatch } from "../../hooks";
+import { postCommentAction } from "../../store/api-actions";
+import ReviewRating from "./review-rating";
 
 type ReviewForm = {
   rating: null | number;
@@ -7,51 +11,45 @@ type ReviewForm = {
 };
 
 function FormReview(): JSX.Element {
+  const dispatch = useAppDispatch()
+  const params = useParams();
+
   const [formData, setFormData] = useState<ReviewForm>({
     rating: null,
     review: "",
   });
 
-  const ratingStars = new Array(MAX_REVIEW_STARS_COUNT)
-    .fill(null)
-    .map((el, index) => (el = index + 1))
-    .reverse();
+
+  const sendCommet = (evt: SyntheticEvent) => {
+    evt.preventDefault()
+    dispatch(postCommentAction({ comment: formData.review, rating: formData.rating, id: params.id }))
+    setFormData({rating: null, review: ""})
+    clearRadio()
+  }
+
+  const clearRadio = () => {
+    if(document) {
+      const checkedRadio = document.querySelector<HTMLInputElement>('input[type="radio"]:checked')
+      if(checkedRadio) (
+        checkedRadio.checked = false
+      )
+    }
+  }
 
   const setField = ({ target }: any) =>
     setFormData((prevState) => ({ ...prevState, [target.name]: target.value }));
 
-  const ratingStarsElement = ratingStars.map((rating) => (
-    <Fragment key={rating}>
-      <input
-        className="form__rating-input visually-hidden"
-        name="rating"
-        value={rating}
-        id={`${rating}-stars`}
-        type="radio"
-        onChange={setField}
-      />
-      <label
-        htmlFor={`${rating}-stars`}
-        className="reviews__rating-label form__rating-label"
-        title="perfect"
-      >
-        <svg className="form__star-image" width="37" height="33">
-          <use xlinkHref="#icon-star" />
-        </svg>
-      </label>
-    </Fragment>
-  ));
+
 
   return (
     <form className="reviews__form form" action="#" method="post">
       <label className="reviews__label form__label" htmlFor="review">
         Your review
       </label>
-      <div className="reviews__rating-form form__rating">
-        {ratingStarsElement}
-      </div>
+        <ReviewRating setField={setField} />
       <textarea
         className="reviews__textarea form__textarea"
+        value={formData.review}
         id="review"
         name="review"
         placeholder="Tell how was your stay, what you like and what can be improved"
@@ -70,6 +68,7 @@ function FormReview(): JSX.Element {
           .
         </p>
         <button
+          onClick={sendCommet}
           className="reviews__submit form__submit button"
           type="submit"
           disabled={

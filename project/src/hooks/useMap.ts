@@ -4,8 +4,9 @@ import { City } from '../types/offer';
 
 function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: City): Map | null {
   const [map, setMap] = useState<Map | null>(null);
-  
+
   useEffect(() => {
+    // debugger
     if (mapRef.current !== null && map === null) {
       const { location: { latitude, longitude, zoom } } = city;
       const instance = new Map(mapRef.current, {
@@ -23,3 +24,4 @@ function useMap(mapRef: MutableRefObject<HTMLElement | null>, city: City): Map |
 }
 
 export default useMap;
+

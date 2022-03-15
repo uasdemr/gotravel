@@ -1,4 +1,25 @@
+import { AnyAction } from '@reduxjs/toolkit';
+import { MouseEvent, ChangeEvent, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import { useAppSelector } from '../../hooks';
+import {loginAction} from '../../store/api-actions'
+import {store} from '../../store/index';
+
 function LogIn(): JSX.Element {
+  const navigate = useNavigate()
+  const authorizationStatus = useAppSelector(state => state.offers.authorizationStatus)
+
+  useEffect(() => {
+    if(authorizationStatus === AuthorizationStatus.Auth) {
+      navigate(AppRoute.Main)
+    }
+
+  }, [authorizationStatus, navigate])
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   return (
     <div className="page page--gray page--login">
       <header className="header">
@@ -30,6 +51,9 @@ function LogIn(): JSX.Element {
                   className="login__input form__input"
                   type="email"
                   name="email"
+                  value={email}
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    setEmail(evt.target.value)}
                   placeholder="Email"
                   required
                 />
@@ -40,6 +64,9 @@ function LogIn(): JSX.Element {
                   className="login__input form__input"
                   type="password"
                   name="password"
+                  value={password}
+                  onChange={(evt: ChangeEvent<HTMLInputElement>) =>
+                    setPassword(evt.target.value)}
                   placeholder="Password"
                   required
                 />
@@ -47,6 +74,13 @@ function LogIn(): JSX.Element {
               <button
                 className="login__submit form__submit button"
                 type="submit"
+                onClick={(evt: MouseEvent) => {
+                  evt.preventDefault();
+                  const tempEmail = email.trim();
+                  const tempPassword = password.trim();
+                  store.dispatch(loginAction({login: tempEmail, password: tempPassword}) as unknown as AnyAction);
+                  navigate(AppRoute.Main)
+                }}
               >
                 Sign in
               </button>

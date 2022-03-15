@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useAppSelector } from '../../hooks/index';
 
 import { Point } from '../../types/map';
@@ -19,11 +19,20 @@ function Cities(): JSX.Element {
 
   const offersByCity = getOffersByCity(city, offers);
 
+  // const onListItemHoverHandler = useCallback(
+  //   (offerId) => {
+  //     onListItemHover(id)
+  //     // doSomething(a, b);
+  //   },
+  //   [id],
+  // );
+
   const onListItemHover = (offerId: number) => {
-    if (offerId === 0) {
-      setSelectedOffer(offerId);  
-    }
     if(!offerId) return
+
+    if (offerId === 0) {
+      setSelectedOffer(offerId);
+    }
 
     const currentOffer = getOffer(offers, offerId) as Offer;
     const currentPoint: Point = {
@@ -43,7 +52,7 @@ function Cities(): JSX.Element {
           <h2 className="visually-hidden">Places</h2>
           <b className="places__found">{offersByCity.length} places to stay in {city}</b>
           <Sort />
-          <OfferCardList onListItemHover={onListItemHover} typeView='cityCard' />
+          <OfferCardList offers={offersByCity} onListItemHover={onListItemHover} typeView='cityCard' />
         </section>
         <div className="cities__right-section">
           {offers.length && (
@@ -57,7 +66,7 @@ function Cities(): JSX.Element {
         </div>
       </div>}
 
-      
+
     </div>
   )
 }

@@ -1,8 +1,6 @@
 import {createReducer} from '@reduxjs/toolkit';
-import { appFetchReviews } from './actions';
-// import { offers } from '../mocks/offers';
+import { appFetchReviews, postComment } from './actions';
 import {ReviewType} from '../types/review'
-// import {reviews} from '../mocks/reviews'
 
 type initialStateType = {
   reviews: ReviewType[];
@@ -17,6 +15,9 @@ const reviewReducer = createReducer(initialState, (builder) => {
       .addCase(appFetchReviews, (state, action) => {
         state.reviews = action.payload
       });
+      // .addCase(postComment, (state, action) => {
+      //   state.reviews = [...action.payload]
+      // });
   });
 
   export default reviewReducer
